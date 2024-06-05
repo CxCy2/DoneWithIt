@@ -87,6 +87,14 @@ export default function App() {
           ))}
       </MapView>
        
+      <View style={styles.topContainer}>
+        <View><Text style={styles.Header1}>Location</Text></View>
+        <View><Text style={styles.Header2} >Details</Text></View>
+        
+        
+      </View>
+      
+
        <View style={styles.buttonContainer}>
         <Button title="Focus at Me" onPress={focusOnUserLocation} />
       </View>
@@ -148,7 +156,8 @@ export default function App() {
                       source={item}
                       style={styles.thumbnail}
                     />
-                    <Text style={styles.imageText}>Image {index + 1}</Text>
+                    <Text style={styles.imageText} numberOfLines={2}>Post {index + 1}</Text>
+                    <Text style={styles.Header3} width = "95%" height={90} numberOfLines={3}>'Hardcoded text... '</Text>
                   </View>
                 </TouchableOpacity>
               )}
@@ -174,6 +183,38 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
+  },
+  topContainer: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '90%',
+    top: 50,
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  Header1: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'left',
+  },
+  Header2: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'gray',
+    textAlign: 'left',
+  },
+  Header3: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
   buttonContainer: {
     position: 'absolute',
@@ -218,9 +259,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   imageText: {
-    width: '100%',
+    width: '95%',
+    textDecorationStyle: 'bold',
+    fontSize: 17,
     textAlign: 'left',
     marginTop: 5,
-    height: 100,
+    
   },
 });
