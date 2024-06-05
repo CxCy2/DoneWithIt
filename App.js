@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, Alert, Button, Text } from 'react-native';
+import { StyleSheet, View, Alert, Button, Text, Image, FlatList, TouchableHighlight, TouchableOpacity  } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { StatusBar } from 'expo-status-bar';
@@ -12,6 +12,8 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState(null);
   const mapRef = useRef(null);// Reference to the MapView
   const [selectedMarkerName, setSelectedMarkerName] = useState('');
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [selectedMarkerIndex, setSelectedMarkerIndex] = useState(null);
   const refRBSheet = useRef();
 
   //requestion users real time location
@@ -59,8 +61,10 @@ export default function App() {
 
 
    // Function to handle marker press
-   const onMarkerPress = (name) => {
+   const onMarkerPress = (index, name, marker) => {
+    setSelectedMarker(marker);
     setSelectedMarkerName(name);
+    setSelectedMarkerIndex(index);
     refRBSheet.current.open();
   };
 
@@ -72,18 +76,13 @@ export default function App() {
       style={styles.map}
       initialRegion={initialRegion}
       showsUserLocation
+      showsMyLocationButton = {false}
       >
-        {location && (
-          <Marker
-            coordinate={{ latitude: location.latitude, longitude: location.longitude }}
-            title="You are here"
-          />
-        )}
-
         {markers.map((marker, index) =>(
             <Marker key={index} 
             coordinate={marker}
-            onPress={() => onMarkerPress(marker.name)}
+            style={styles.markersStyle}
+            onPress={() => onMarkerPress(index, marker.name, marker)}
             />
           ))}
       </MapView>
@@ -94,32 +93,68 @@ export default function App() {
       
   
       {/* RBsheet to display the selected marker's name */}
-      <View style={{flex: 1}}>
+      <View style={{flex: 1 }}>
       <Button
         title="OPEN BOTTOM SHEET"
         onPress={() => refRBSheet.current.open()}
       />
       <RBSheet
         ref={refRBSheet}
-        customStyles={{
-          wrapper: {
-            backgroundColor: 'transparent',
-          },
-          draggableIcon: {
-            backgroundColor: '#000',
-          },
-        }}
+        
+        draggable = {true}
+        dragOnContent = {false}
+        height={700}
+
         customModalProps={{
           animationType: 'slide',
           statusBarTranslucent: true,
         }}
+        customStyles={{
+          container: {
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+          },
+          wrapper: {
+            backgroundColor: 'transparent',
+          },
+          draggableIcon: {
+            backgroundColor: 'blue',
+            borderColor: 'black',
+            width: 80,
+          },
+        }}
+        
         customAvoidingViewProps={{
           enabled: false,
         }}
       >
         <View style={styles.sheetContent}>
-          <Text style={styles.sheetText}>{selectedMarkerName}</Text>
-          <Button title="Close" onPress={() => refRBSheet.current.close()} />
+          {/* <Text style={styles.sheetText}>{selectedMarkerName}</Text> */}
+          <Text style={styles.sheetText}>{selectedMarker ? selectedMarker.name : ''}</Text>
+          {selectedMarker && (
+            //flatlist for handling big dataset
+            <FlatList
+              data={selectedMarker.images}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={2}
+              renderItem={({ item, index  }) => (
+                 <TouchableOpacity
+                  style={styles.touchable}
+                  activeOpacity={0.8}
+                  onPress={() => Alert.alert('Image Clicked', `You clicked image ${index + 1}`)}
+                >
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={item}
+                      style={styles.thumbnail}
+                    />
+                    <Text style={styles.imageText}>Image {index + 1}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+          {/* <Button title="Close" onPress={() => refRBSheet.current.close()} /> */}
         </View>
       </RBSheet>
     </View>
@@ -130,7 +165,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+ container: {
     flex: 1,
     backgroundColor: 'dodgerblue',
     alignItems: 'center',
@@ -143,8 +178,49 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     bottom: 50,
-    left: '55%',
+    left: '50%',
     marginLeft: -75, // Adjust the margin to half of the button width
-  }, 
-  
+  },
+  sheetContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sheetText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  touchable: {
+    flex: 1,
+    margin: '0%',
+    alignItems: 'center',
+  },
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    
+    borderRadius: '20'
+  },
+  touchable: {
+    width: '48%',
+    margin: '1%',
+    alignItems: 'center',
+    
+  },
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  thumbnail: {
+    width: '100%',
+    height: 200,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  imageText: {
+    width: '100%',
+    textAlign: 'left',
+    marginTop: 5,
+    height: 100,
+  },
 });

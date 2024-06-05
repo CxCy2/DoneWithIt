@@ -5,15 +5,58 @@ export const markers = [
         longitude: 101.7038462,
         latitudeDelta: 0.005, // Closer zoom level
         longitudeDelta: 0.005, // Closer zoom level
-        name: 'P1'
+        name: 'P1',
+        images: [
+            require('./image1.jpg'), 
+            require('./image2.jpg')  
+        ]
     },
 
     {
         latitude: 3.2182805,
-        longitude: 101.7338462,
+        longitude: 101.7339462,
         latitudeDelta: 0.005, // Closer zoom level
         longitudeDelta: 0.005, // Closer zoom level
-        name: 'P2'
+        name: 'P2',
+        images: [
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image4.jpg'), 
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image3.jpg')  
+        ]
     },
 
     {
@@ -21,7 +64,17 @@ export const markers = [
         longitude: 101.7638462,
         latitudeDelta: 0.005, // Closer zoom level
         longitudeDelta: 0.005, // Closer zoom level
-        name: 'P3'
+        name: 'P3',
+        images: [
+            require('./image3.jpg'), 
+            require('./image2.jpg'),
+            require('./image3.jpg'),
+            require('./image2.jpg'),
+            require('./image3.jpg'),
+            require('./image3.jpg'),
+            require('./image4.jpg'),
+            require('./image3.jpg') 
+        ]
     },
 
     {
@@ -29,6 +82,13 @@ export const markers = [
         longitude: 101.8138462,
         latitudeDelta: 0.005, // Closer zoom level
         longitudeDelta: 0.005, // Closer zoom level
-        name: 'P4'
+        name: 'P4',
+        images: [
+            require('./image1.jpg'), 
+            require('./image2.jpg'),
+            require('./image1.jpg'),
+            require('./image3.jpg'),
+            require('./image3.jpg') 
+        ]
     },
 ]
