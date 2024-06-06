@@ -1,13 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, Alert, Button, Text, Image, FlatList, TouchableHighlight, TouchableOpacity  } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
 import { StatusBar } from 'expo-status-bar';
-import Modal from 'react-native-modal';
-import { markers } from './assets/markers'; // Adjust the import path as needed
-import RBSheet from 'react-native-raw-bottom-sheet';
+import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import CalendarScreen from './Screen/CalendarScreen';
+import Map from './Screen/Map';
+
+const Stack = createStackNavigator();
 
 export default function App() {
+<<<<<<< Updated upstream
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const mapRef = useRef(null);// Reference to the MapView  
@@ -193,100 +195,23 @@ export default function App() {
       {/* Status bar */}
       <StatusBar style="auto" />
     </View>
+=======
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Map">
+        <Stack.Screen name="Calendar" component={CalendarScreen} />
+        <Stack.Screen name="Map" component={Map} />
+      </Stack.Navigator>
+    </NavigationContainer>
+>>>>>>> Stashed changes
   );
 }
 
 const styles = StyleSheet.create({
- container: {
+  container: {
     flex: 1,
-    backgroundColor: 'dodgerblue',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  map: {
-    width: '100%',
-    height: '100%',
-  },
-  topContainer: {
-    position: 'absolute',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '90%',
-    top: 50,
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  Header1: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'left',
-  },
-  Header2: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: 'gray',
-    textAlign: 'left',
-  },
-  Header3: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'left',
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 50,
-    left: '50%',
-    marginLeft: -75, // Adjust the margin to half of the button width
-  },
-  sheetContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sheetText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  touchable: {
-    flex: 1,
-    margin: '0%',
-    alignItems: 'center',
-  },
-  imageContainer: {
-    width: '100%',
-    alignItems: 'center',
-    
-    borderRadius: '20'
-  },
-  touchable: {
-    width: '48%',
-    margin: '1%',
-    alignItems: 'center',
-    
-  },
-  imageContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  thumbnail: {
-    width: '100%',
-    height: 200,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  imageText: {
-    width: '95%',
-    textDecorationStyle: 'bold',
-    fontSize: 17,
-    textAlign: 'left',
-    marginTop: 5,
-    
   },
 });
