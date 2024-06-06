@@ -6,6 +6,8 @@ import { StatusBar } from 'expo-status-bar';
 import Modal from 'react-native-modal';
 import { markers } from '../assets/markers'; // Adjust the import path as needed
 import RBSheet from 'react-native-raw-bottom-sheet';
+import WebView from 'react-native-webview'; // Import WebView
+import { Menu, Provider, Divider } from 'react-native-paper';
 
 export default function Map() {
   const [location, setLocation] = useState(null);
@@ -14,8 +16,12 @@ export default function Map() {
   const [selectedMarkerName, setSelectedMarkerName] = useState('');
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [selectedMarkerIndex, setSelectedMarkerIndex] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [webviewVisible, setWebviewVisible] = useState(false); // State to manage WebView visibility
   const refRBSheet = useRef();
-
+  const webViewUrl = 'https://www.qtimeweb.com'; // The URL to be displayed in WebView
+  const [menuVisible, setMenuVisible] = useState(false); // State to manage dropdown menu visibility
   //requestion users real time location
   useEffect(() => {
     (async () => 
@@ -68,7 +74,26 @@ export default function Map() {
     refRBSheet.current.open();
   };
 
+  // Function to handle scroll view post press
+  const onPostPress = (item) => {
+    setSelectedImage(item);
+    setModalVisible(true);
+  };
+  
+  // Function to copy the link
+  const copyLink = () => {
+    Clipboard.setString(webViewUrl);
+    Alert.alert('Link Copied', webViewUrl);
+    setMenuVisible(false);
+  };
+
+  // Function to open the link in the browser
+  const openInBrowser = () => {
+    Linking.openURL(webViewUrl);
+    setMenuVisible(false);
+  };
   return (
+    <Provider>
     <View style={styles.container}>
       
       <MapView 
@@ -102,10 +127,7 @@ export default function Map() {
   
       {/* RBsheet to display the selected marker's name */}
       <View style={{flex: 1 }}>
-      <Button
-        title="OPEN BOTTOM SHEET"
-        onPress={() => refRBSheet.current.open()}
-      />
+      
       <RBSheet
         ref={refRBSheet}
         
@@ -121,12 +143,16 @@ export default function Map() {
           container: {
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
+            elevation: 20,
+            shadowOffset: { width: 10, height: 10 },
+            shadowColor: 'black',
+            shadowOpacity: 1,
           },
           wrapper: {
             backgroundColor: 'transparent',
           },
           draggableIcon: {
-            backgroundColor: 'blue',
+            backgroundColor: 'grey',
             borderColor: 'black',
             width: 80,
           },
@@ -149,7 +175,7 @@ export default function Map() {
                  <TouchableOpacity
                   style={styles.touchable}
                   activeOpacity={0.8}
-                  onPress={() => Alert.alert('Image Clicked', `You clicked image ${index + 1}`)}
+                  onPress={() => onPostPress(item)}
                 >
                   <View style={styles.imageContainer}>
                     <Image
@@ -166,10 +192,76 @@ export default function Map() {
           {/* <Button title="Close" onPress={() => refRBSheet.current.close()} /> */}
         </View>
       </RBSheet>
-    </View>
+      </View>
+
       {/* Status bar */}
       <StatusBar style="auto" />
+      
+      {/* Modal to display selected image */}
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        margin = {0} //eliminate the weird pading
+        animationType="fade"
+        statusBarTranslucent //cover including statusbar
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.topActionBarContainer}>
+            <TouchableOpacity style={styles.closeContent} onPress={() => setModalVisible(false)}>
+              <Image style={styles.iconContent} source={require('../assets/close_ic.png')}  />
+            </TouchableOpacity>
+            
+            <View style={{flexDirection:"row", width:'35%', justifyContent: 'flex-end'}}>
+            <TouchableOpacity style={styles.closeContent} onPress={() => setModalVisible(false)}>
+              <Image style={styles.iconContent1} source={require('../assets/report_ic.png')}  />
+            </TouchableOpacity>
+              <TouchableOpacity style={styles.closeContent} onPress={() => setWebviewVisible(true)}>
+                <Image style={styles.iconContent2} source={require('../assets/share_ic.png')}  />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+            <View style={styles.modalContent}>
+              <Image source={selectedImage} style={styles.modalImage} />
+            </View>
+          </View>
+      </Modal>
+      
+      {/* WebView Modal */}
+      <Modal
+          visible={webviewVisible}
+          transparent={false}
+          animationType="slide"
+          padding = {0}
+          statusBarTranslucent
+          onRequestClose={() => setWebviewVisible(false)}
+        >
+          <View style={styles.webviewContainer}>
+            <View style={styles.webviewHeader}>
+            <TouchableOpacity  style= {{opacity: 0.6}}  onPress={() => setWebviewVisible(false)}>
+              <Image style={styles.iconContent} source={require('../assets/close_ic.png')}  />
+            </TouchableOpacity> 
+              <Text style={styles.webviewUrl}>{webViewUrl}</Text>
+              <Menu
+                visible={menuVisible}
+                onDismiss={() => setMenuVisible(false)}
+                anchor={
+                  <Button onPress={() => setMenuVisible(true)} title="Options" />
+                }
+              >
+                <Menu.Item onPress={copyLink} title="Copy Link" />
+                <Divider />
+                <Menu.Item onPress={openInBrowser} title="Open in Browser" />
+              </Menu>
+            </View>
+            <WebView source={{ uri: webViewUrl }} style={{ flex: 1 }} />
+          </View>
+        </Modal>
+
+
     </View>
+    </Provider>
   );
 }
 
@@ -199,6 +291,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 2,
     elevation: 5,
+  },
+  topActionBarContainer: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    top: 20,
+    alignSelf: 'center',
+    //backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 10,
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   Header1: {
     fontSize: 20,
@@ -266,4 +373,73 @@ const styles = StyleSheet.create({
     marginTop: 5,
     
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    width: '100%', // Ensure it fits the whole screen
+    height: '100%', // Ensure it fits the whole screen
+  },
+  modalContent: {
+    width: '95%',
+    backgroundColor: 'transparent',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalImage: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  closeContent: {
+    alignSelf: 'top-right',
+    position: 'relative',
+    padding: 5,
+    width: 160,
+    color: 'red',
+    flex : 1
+    
+  },
+  iconContent: {
+    paddingTop: 5,
+    marginTop: 10,
+    height: 25,
+    width: 25,
+    resizeMode: 'auto',
+  },
+  iconContent1: {
+    padding: 5,
+    height: 35,
+    width: 35,
+    resizeMode: 'auto',
+  },
+  iconContent2: {
+    padding: 5,
+    height: 30,
+    width: 30,
+    resizeMode: 'auto',
+    
+  },
+  webviewContainer: {
+    marginTop: 20,
+    flex: 1,
+    
+  },
+  webviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  webviewUrl: {
+    padding: 10,
+    flex: 1,
+    fontSize: 16,
+    color: 'blue',
+  },
 });
+
+

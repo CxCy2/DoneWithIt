@@ -11,7 +11,12 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Map">
+      <Stack.Navigator 
+      initialRouteName="Map"
+      screenOptions={{
+        headerShown: false
+      }}
+      >
         <Stack.Screen name="Calendar" component={CalendarScreen} />
         <Stack.Screen name="Map" component={Map} />
       </Stack.Navigator>
@@ -26,4 +31,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+}); 
