@@ -1,15 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Icon from 'react-native-vector-icons/Ionicons'; // Import the icon library
+import { createStackNavigator } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
 import CalendarScreen from './Screen/CalendarScreen';
 import Map from './Screen/Map';
+import SearchScreen from './Screen/Search'; // Import the new SearchScreen
 
 const Tab = createMaterialTopTabNavigator();
+const Stack = createStackNavigator();
 
-function CustomTabBar({ state, descriptors, navigation }) {
+function CustomTabBar({ state, descriptors, navigation, position }) {
   return (
     <View style={styles.tabBarContainer}>
       <View style={styles.tabBar}>
@@ -51,7 +54,10 @@ function CustomTabBar({ state, descriptors, navigation }) {
                 testID={options.tabBarTestID}
                 onPress={onPress}
                 onLongPress={onLongPress}
-                style={{ color: isFocused ? 'green' : 'black' }}
+                style={{
+                  color: isFocused ? 'green' : 'black',
+                  fontSize: 16,
+                }}
               >
                 {label}
               </Text>
@@ -60,7 +66,9 @@ function CustomTabBar({ state, descriptors, navigation }) {
         })}
       </View>
       <View style={styles.iconContainer}>
-        <Icon name="search" size={25} color="black" style={styles.icon} onPress={() => { /* Handle search icon press */ }} />
+        <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+          <Icon name="search" size={25} color="black" style={styles.icon} />
+        </TouchableOpacity>
         <Icon name="notifications" size={25} color="black" onPress={() => { /* Handle bell icon press */ }} />
       </View>
     </View>
@@ -70,20 +78,27 @@ function CustomTabBar({ state, descriptors, navigation }) {
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="Calendar"
-        tabBar={(props) => <CustomTabBar {...props} />}
-        screenOptions={{
-          tabBarLabelStyle: { fontSize: 12 }, // Customize the tab label style
-          tabBarStyle: { backgroundColor: '#fff' }, // Customize the tab bar style
-          tabBarActiveTintColor: 'green', // Active tab label color
-          tabBarIndicatorStyle: { backgroundColor: 'green' }, // Set the indicator color to green
-          tabBarInactiveTintColor: 'black', // Inactive tab label color
-        }}
-      >
-        <Tab.Screen name="Calendar" component={CalendarScreen} options={{ tabBarLabel: 'Calendar' }} />
-        <Tab.Screen name="Map" component={Map} options={{ tabBarLabel: 'Map' }} />
-      </Tab.Navigator>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" options={{ headerShown: false }}>
+          {() => (
+            <Tab.Navigator
+              initialRouteName="Calendar"
+              tabBar={(props) => <CustomTabBar {...props} />}
+              screenOptions={{
+                tabBarLabelStyle: { fontSize: 16 }, // Increase font size
+                tabBarStyle: { backgroundColor: '#fff' }, // Customize the tab bar style
+                tabBarIndicatorStyle: { backgroundColor: 'green' }, // Set the indicator color to green
+                tabBarActiveTintColor: 'green', // Active tab label color
+                tabBarInactiveTintColor: 'black', // Inactive tab label color
+              }}
+            >
+              <Tab.Screen name="Calendar" component={CalendarScreen} options={{ tabBarLabel: 'Calendar' }} />
+              <Tab.Screen name="Map" component={Map} options={{ tabBarLabel: 'Map' }} />
+            </Tab.Navigator>
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
@@ -94,7 +109,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    paddingTop: 40,
+    paddingTop: 30,
   },
   tabBar: {
     flexDirection: 'row',
@@ -108,6 +123,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 15,
-    paddingEnd: 20,
+    paddingEnd: 10,
   },
 });
