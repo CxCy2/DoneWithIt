@@ -1,15 +1,21 @@
 // Screen/SearchScreen.js
 
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import { dataSearch } from '../assets/searchDataDummy'; // Adjust the import path as needed
 
 const SearchScreen = ({ navigation }) => {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
+  const refRBSheet = useRef();
 
   const handleClear = () => {
     setTitle('');
     setLocation('');
+    console.log('Title:', title);
+    console.log('Location:', location);
+    navigation.goBack();
   };
 
   const handleSearchTitle = () => {
@@ -17,10 +23,12 @@ const SearchScreen = ({ navigation }) => {
   };
 
   const handleDone = () => {
-    console.log('Title:', title);
-    console.log('Location:', location);
-    navigation.goBack();
+    refRBSheet.current.open();
   };
+
+  const renderItem = ({ item }) => (
+    <Image source={item.src} style={styles.image} />
+  );
 
   return (
     <View style={styles.container}>
@@ -50,6 +58,51 @@ const SearchScreen = ({ navigation }) => {
           value={location}
           onChangeText={setLocation}
         />
+      </View>
+
+      <View style={{ flex: 1 }}>
+        <RBSheet
+          ref={refRBSheet}
+          draggable={true}
+          dragOnContent={false}
+          height={800}
+          customModalProps={{
+            animationType: 'slide',
+            statusBarTranslucent: true,
+          }}
+          customStyles={{
+            container: {
+              borderTopLeftRadius: 30,
+              borderTopRightRadius: 30,
+              elevation: 20,
+              shadowOffset: { width: 10, height: 10 },
+              shadowColor: 'black',
+              shadowOpacity: 1,
+            },
+            wrapper: {
+              backgroundColor: 'transparent',
+            },
+            draggableIcon: {
+              backgroundColor: 'grey',
+              borderColor: 'black',
+              width: 80,
+            },
+          }}
+          customAvoidingViewProps={{
+            enabled: false,
+          }}
+        >
+          <View style={styles.sheetContent}>
+            <Text style={styles.sheetText}>{dataSearch[0].name}</Text>
+            <FlatList
+              data={dataSearch[0].images}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              numColumns={2} // Adjust the number of columns as needed
+              style={styles.flatList}
+            />
+          </View>
+        </RBSheet>
       </View>
     </View>
   );
@@ -96,6 +149,23 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 8,
     borderRadius: 25,
+  },
+  sheetContent: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  sheetText: {
+    fontSize: 24,
+    marginBottom: 16,
+  },
+  flatList: {
+    flex: 1,
+    width: '100%',
+  },
+  image: {
+    width: '45%',
+    height: 150,
+    margin: 5,
   },
 });
 

@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the icon l
 import CalendarScreen from './Screen/CalendarScreen';
 import Map from './Screen/Map';
 import SearchScreen from './Screen/Search'; // Import the new SearchScreen
+import Directories from './Screen/Directories';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -93,11 +94,13 @@ export default function App() {
               }}
             >
               <Tab.Screen name="Calendar" component={CalendarScreen} options={{ tabBarLabel: 'Calendar' }} />
-              <Tab.Screen name="Map" component={Map} options={{ tabBarLabel: 'Map' }} />
+              <Tab.Screen name="Directories" component={Directories} options={{ tabBarLabel: 'Directories' }} />
+              
             </Tab.Navigator>
           )}
         </Stack.Screen>
         <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Map" component={Map} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

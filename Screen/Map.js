@@ -9,7 +9,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import WebView from 'react-native-webview'; // Import WebView
 import { Menu, Provider, Divider } from 'react-native-paper';
 
-export default function Map() {
+export default function Map({ }) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const mapRef = useRef(null);// Reference to the MapView
@@ -22,6 +22,8 @@ export default function Map() {
   const refRBSheet = useRef();
   const webViewUrl = 'https://www.qtimeweb.com'; // The URL to be displayed in WebView
   const [menuVisible, setMenuVisible] = useState(false); // State to manage dropdown menu visibility
+  //const { Id } = route.params;//suppose to open the location on open
+
   //requestion users real time location
   useEffect(() => {
     (async () => 
@@ -326,7 +328,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     bottom: 50,
-    left: '50%',
+    left: '55%',
     marginLeft: -75, // Adjust the margin to half of the button width
   },
   sheetContent: {
