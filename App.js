@@ -10,7 +10,8 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 export default function App() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const mapRef = useRef(null);// Reference to the MapView
+  const mapRef = useRef(null);// Reference to the MapView  
+  const [isModalVisible, setModalVisible] = useState(false);// State to control the visibility of the bottom sheet
   const [selectedMarkerName, setSelectedMarkerName] = useState('');
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [selectedMarkerIndex, setSelectedMarkerIndex] = useState(null);
@@ -66,6 +67,12 @@ export default function App() {
     setSelectedMarkerName(name);
     setSelectedMarkerIndex(index);
     refRBSheet.current.open();
+  };
+
+  // Function to handle scroll view post press
+  const onPostPress = (index) => {
+    setModalVisible(true);
+    Alert.alert('Image Clicked', `You clicked image ${index + 1}`)
   };
 
   return (
@@ -139,6 +146,9 @@ export default function App() {
         <View style={styles.sheetContent}>
           {/* <Text style={styles.sheetText}>{selectedMarkerName}</Text> */}
           <Text style={styles.sheetText}>{selectedMarker ? selectedMarker.name : ''}</Text>
+
+          
+          {/* Flatlist to enable display scroll content for multiple post */}
           {selectedMarker && (
             //flatlist for handling big dataset
             <FlatList
@@ -149,7 +159,7 @@ export default function App() {
                  <TouchableOpacity
                   style={styles.touchable}
                   activeOpacity={0.8}
-                  onPress={() => Alert.alert('Image Clicked', `You clicked image ${index + 1}`)}
+                  onPress={() => onPostPress(index)}
                 >
                   <View style={styles.imageContainer}>
                     <Image
@@ -163,6 +173,19 @@ export default function App() {
               )}
             />
           )}
+
+          {/* Modal to display the selected marker's name */}
+      <Modal
+        isVisible={isModalVisible}
+        onBackdropPress={() => setModalVisible(false)}
+        style={styles.modal}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>{selectedMarkerName}</Text>
+          <Button title="Close" onPress={() => setModalVisible(false)} />
+        </View>
+      </Modal>
+
           {/* <Button title="Close" onPress={() => refRBSheet.current.close()} /> */}
         </View>
       </RBSheet>
